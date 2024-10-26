@@ -1,22 +1,64 @@
-//Zadanie należy wykonać w typescript i skompilować później na javascript
+const imageUpload = document.getElementById("imageUpload") as HTMLInputElement;
 
-// Zadanie 1: Wybierz niezbędne elementy DOM
-// Przykład: Musisz uzyskać odniesienia do elementów takich jak input pliku, przycisk, img i canvas.
-// Wskazówka: Użyj document.getElementById lub podobnych metod, aby uzyskać elementy po ich ID.
+const convertGrayscale = document.getElementById(
+    "convertGrayscale"
+) as HTMLButtonElement;
 
-// Zadanie 2: Dodaj nasłuchiwacz zdarzeń dla przesyłania obrazu
-// Kiedy użytkownik wybierze obraz, wyświetl go w elemencie <img>.
-// Wskazówka: Możesz użyć API FileReader, aby odczytać plik jako URL danych.
+const uploadedImage = document.getElementById(
+    "uploadedImage"
+) as HTMLImageElement;
 
-// Zadanie 3: Dodaj nasłuchiwacz zdarzeń do przycisku „Konwertuj na odcienie szarości”
-// Po kliknięciu, skonwertuj wyświetlany obraz na odcienie szarości i pokaż go w elemencie <canvas>.
-// Wskazówka: Musisz użyć elementu canvas i jego kontekstu (2D) oraz zmodyfikować dane pikseli.
+const grayscaleImage = document.getElementById(
+    "grayscaleImage"
+) as HTMLCanvasElement;
 
-// Zadanie 4: Narysuj przesłany obraz na canvasie
-// Wskazówka: Użyj drawImage() w kontekście canvasa, aby narysować obraz. Upewnij się, że rozmiar canvasa odpowiada rozmiarowi obrazu.
+imageUpload.addEventListener("change", () => {
+    const file = imageUpload.files?.item(0);
+    // console.log(file);
+    if (file) {
+        const reader = new FileReader();
 
-// Zadanie 5: Skonwertuj obraz na odcienie szarości poprzez manipulowanie danymi pikseli
-// Wskazówka: Użyj getImageData() do pobrania danych pikseli, zastosuj formułę dla odcieni szarości, a następnie użyj putImageData(), aby zaktualizować canvas.
+        reader.onload = (e) => {
+            uploadedImage.src = e.target?.result as string;
+        };
+        reader.readAsDataURL(file);
+    }
+});
 
-// Zadanie opcjonalne: Zastanów się, co się stanie, jeśli nie zostanie przesłany żaden obraz, a przycisk odcieni szarości zostanie kliknięty.
-// Wskazówka: Możesz sprawdzić, czy obraz został przesłany, zanim zastosujesz filtr odcieni szarości.
+convertGrayscale.addEventListener("click", () => {
+    if (uploadedImage.src) {
+        const context = grayscaleImage.getContext("2d");
+
+        grayscaleImage.width = uploadedImage.width;
+        grayscaleImage.height = uploadedImage.height;
+        console.log(context);
+        context?.drawImage(uploadedImage, 0, 0);
+
+        const imageData = context?.getImageData(
+            0,
+            0,
+            grayscaleImage.width,
+            grayscaleImage.height
+        ).data;
+
+        if (imageData) {
+            for (let i = 0; i < imageData!.length; i += 4) {
+                const gray =
+                    0.299 * imageData![i] +
+                    0.587 * imageData![i + 1] +
+                    0.114 * imageData![i + 2];
+
+                imageData![i] = imageData![i + 1] = imageData![i + 2] = gray;
+            }
+            const newImageData = new ImageData(
+                imageData!,
+                grayscaleImage.width,
+                grayscaleImage.height
+            );
+
+            context.putImageData(newImageData, 0, 0);
+        }
+    } else {
+        alert("Dodaj obraz ;))");
+    }
+});
