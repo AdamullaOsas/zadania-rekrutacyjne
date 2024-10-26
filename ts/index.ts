@@ -14,10 +14,9 @@ const grayscaleImage = document.getElementById(
 
 imageUpload.addEventListener("change", () => {
     const file = imageUpload.files?.item(0);
-    // console.log(file);
+
     if (file) {
         const reader = new FileReader();
-
         reader.onload = (e) => {
             uploadedImage.src = e.target?.result as string;
         };
@@ -31,7 +30,7 @@ convertGrayscale.addEventListener("click", () => {
 
         grayscaleImage.width = uploadedImage.width;
         grayscaleImage.height = uploadedImage.height;
-        console.log(context);
+
         context?.drawImage(uploadedImage, 0, 0);
 
         const imageData = context?.getImageData(

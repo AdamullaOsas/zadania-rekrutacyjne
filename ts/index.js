@@ -6,7 +6,6 @@ const grayscaleImage = document.getElementById("grayscaleImage");
 imageUpload.addEventListener("change", () => {
     var _a;
     const file = (_a = imageUpload.files) === null || _a === void 0 ? void 0 : _a.item(0);
-    // console.log(file);
     if (file) {
         const reader = new FileReader();
         reader.onload = (e) => {
@@ -21,7 +20,6 @@ convertGrayscale.addEventListener("click", () => {
         const context = grayscaleImage.getContext("2d");
         grayscaleImage.width = uploadedImage.width;
         grayscaleImage.height = uploadedImage.height;
-        console.log(context);
         context === null || context === void 0 ? void 0 : context.drawImage(uploadedImage, 0, 0);
         const imageData = context === null || context === void 0 ? void 0 : context.getImageData(0, 0, grayscaleImage.width, grayscaleImage.height).data;
         if (imageData) {
